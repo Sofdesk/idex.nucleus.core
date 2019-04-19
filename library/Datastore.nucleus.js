@@ -762,7 +762,7 @@ class NucleusDatastore {
         const datastoreRequestList = fieldNameList
           .map((fieldName) => {
 
-            return ['HSCAN', itemKey, 0, 'MATCH', `${fieldName}*`];
+            return ['HSCAN', itemKey, 0, 'MATCH', `${fieldName}*`, 'COUNT', 1000];
           });
 
         return this.$$server.multi(datastoreRequestList).execAsync()
