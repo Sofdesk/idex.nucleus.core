@@ -803,6 +803,10 @@ class NucleusResourceAPI {
     const userDirectAncestorChildrenNodeList = await NucleusResourceAPI.walkHierarchyTreeDownward.call(this, userAncestorNodeList[0] || "SYSTEM");
     const resourceAncestorNodeList = await NucleusResourceAPI.walkHierarchyTreeUpward.call(this, { ID: resourceID, type: resourceType });
 
+    if (NucleusResourceAPI.shouldIgnoreUserVerification(resourceType, resourceAncestorNodeList)) {
+      return { canRetrieveResource: true };
+    }
+
     const nodeIDIntersectionList = userAncestorNodeList.slice(0).concat(userDirectAncestorChildrenNodeList)
       .filter((node) => {
 
@@ -839,6 +843,10 @@ class NucleusResourceAPI {
     const userDirectAncestorChildrenNodeList = await NucleusResourceAPI.walkHierarchyTreeDownward.call(this, userDirectAncestorNodeList[0]);
     const resourceAncestorNodeList = await NucleusResourceAPI.walkHierarchyTreeUpward.call(this, { ID: resourceID, type: resourceType });
 
+    if (NucleusResourceAPI.shouldIgnoreUserVerification(resourceType, resourceAncestorNodeList)) {
+      return { canUpdateResource: true };
+    }
+
     const nodeIDIntersectionList = userDirectAncestorNodeList.slice(0).concat(userDirectAncestorChildrenNodeList)
       .filter((node) => {
 
@@ -853,6 +861,11 @@ class NucleusResourceAPI {
     if (nodeIDIntersectionList.length === 0) return { canUpdateResource: false };
 
     return { canUpdateResource: true };
+  }
+
+  static shouldIgnoreUserVerification(resourceType, resourceAncestorNodeList = []) {
+    const ignoreList = ["Project"];
+    return ignoreList.includes(resourceType) || resourceAncestorNodeList.some((resource) => ignoreList.includes(resource.type))
   }
 
   /**
