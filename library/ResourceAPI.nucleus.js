@@ -864,8 +864,9 @@ class NucleusResourceAPI {
   }
 
   static shouldIgnoreUserVerification(resourceType, resourceAncestorNodeList = []) {
-    const ignoreList = ["Project"];
-    return ignoreList.includes(resourceType) || resourceAncestorNodeList.some((resource) => ignoreList.includes(resource.type))
+    return true;
+    // const ignoreList = ["Project"];
+    // return ignoreList.includes(resourceType) || resourceAncestorNodeList.some((resource) => ignoreList.includes(resource.type))
   }
 
   /**
